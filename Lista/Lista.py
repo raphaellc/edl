@@ -1,5 +1,7 @@
-from Node import Node
+from turtle import clear
 from typing import Optional, List
+from Node import Node
+
 class Lista:
     """
     Uma lista encadeada.
@@ -27,21 +29,21 @@ class Lista:
         else:
             self._inserir_recursivo(nodo.obter_proximo(), valor)
 
-    def busca(self, valor) -> int:
+    def busca(self, valor) -> Optional[int]:
         """
         Busca o primeiro nodo com o valor fornecido e retorna a posição.
-        Retorna -1 se o valor não for encontrado.
+        Retorna None se o valor não for encontrado.
         """
         return self._busca_recursiva(self._nodo_inicial, valor, 0)
 
-    def _busca_recursiva(self, nodo: Optional['Node'], valor, posicao: int) -> int:
+    def _busca_recursiva(self, nodo: Optional['Node'], valor, posicao: int) -> Optional[int]:
         if nodo is None:
-            return -1
+            return None  # Retorna None para indicar que o valor não foi encontrado
         if nodo.obter_valor() == valor:
             return posicao
         return self._busca_recursiva(nodo.obter_proximo(), valor, posicao + 1)
 
-    def remover(self, posicao: int) -> None:
+    def remover_por_posicao(self, posicao: int) -> None:
         """
         Remove o nodo na posição especificada.
         """
@@ -50,15 +52,32 @@ class Lista:
         if posicao == 0:
             self._nodo_inicial = self._nodo_inicial.obter_proximo()
         else:
-            self._remover_recursivo(self._nodo_inicial, posicao, 1)
+            self._remover_por_posicao_recursivo(self._nodo_inicial, posicao, 1)
 
-    def _remover_recursivo(self, nodo: Optional['Node'], posicao: int, contador: int) -> None:
+    def _remover_por_posicao_recursivo(self, nodo: Optional['Node'], posicao: int, contador: int) -> None:
         if nodo is None or nodo.obter_proximo() is None:
             raise IndexError("Posição fora do alcance da lista.")
         if contador == posicao:
             nodo.definir_proximo(nodo.obter_proximo().obter_proximo())
         else:
-            self._remover_recursivo(nodo.obter_proximo(), posicao, contador + 1)
+            self._remover_por_posicao_recursivo(nodo.obter_proximo(), posicao, contador + 1)
+
+    def remover_por_valor(self, valor) -> bool:
+        """
+        Remove o primeiro nodo com o valor especificado.
+        Retorna True se o valor for removido, False caso contrário.
+        """
+        return self._remover_por_valor_recursivo(self._nodo_inicial, valor)
+
+    def _remover_por_valor_recursivo(self, nodo: Optional['Node'], valor) -> bool:
+        if nodo is None:
+            return False
+        if nodo.obter_proximo() is not None and nodo.obter_proximo().obter_valor() == valor:
+            nodo.definir_proximo(nodo.obter_proximo().obter_proximo())
+            self._tamanho -= 1
+            return True
+        else:
+            return self._remover_por_valor_recursivo(nodo.obter_proximo(), valor)
 
     def obterTamanhoLista(self) -> int:
         return self._tamanho
@@ -70,7 +89,7 @@ class Lista:
 
         def elementos_recursivos(nodo: Optional['Node']) -> List[str]:
             if nodo is None:
-                return []  
+                return []
             return [str(nodo.obter_valor())] + elementos_recursivos(nodo.obter_proximo())
 
         return "[" + ", ".join(elementos_recursivos(self._nodo_inicial)) + "]"
