@@ -8,8 +8,9 @@ class Lista:
     """
 
     def __init__(self):
-        self._nodo_inicial: Optional['Node'] = None  # Cabeça da lista encadeada
-        self._tamanho: int = 0  # Número de elementos na lista
+        self._nodo_inicial: Optional['Node'] = None  
+        self._tamanho: int = 0  
+        self._nodo_final: Optional['Node'] = None  
 
     def inserir(self, valor) -> None:
         """
@@ -20,12 +21,16 @@ class Lista:
     def _inserir_recursivo(self, nodo: Optional['Node'], valor) -> None:
         if nodo is None:
             self._nodo_inicial = Node(valor)
+            self._nodo_inicial.definir_proximo(self._nodo_inicial)
             self._tamanho += 1
             return
-        if nodo.obter_proximo() is None:
+        if nodo.obter_proximo() is self._nodo_inicial:
             novo_node = Node(valor)
+            novo_node.definir_proximo(self._nodo_inicial)
             nodo.definir_proximo(novo_node)
             self._tamanho += 1
+            return
+
         else:
             self._inserir_recursivo(nodo.obter_proximo(), valor)
 

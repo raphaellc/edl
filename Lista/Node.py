@@ -7,6 +7,7 @@ class Node:
     def __init__(self, valor):
         self._valor = valor  # Valor armazenado no nodo
         self._proximo: Optional['Node'] = None  # Referência para o próximo nodo
+       
 
     def obter_valor(self) -> any:
         return self._valor
